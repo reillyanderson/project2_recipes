@@ -1,8 +1,8 @@
 const http = require('http');
 
 const revision = {
-  version: 'v1',
-  message: 'App Service revisions label test - initial revision',
+  version: 'v2',
+  message: 'App Service revisions label test - candidate revision',
 };
 
 const server = http.createServer((request, response) => {

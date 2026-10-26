@@ -41,9 +41,9 @@ jobs:
           name: app-service-package
       - uses: azure/login@v3
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E3462A8C655545DA8CD9BC8E1AC987A3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_89715514F1694C32A8492F9BF09E8FE3 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2F61A774D5D448E9B1D6E0425BCE2E99 }}
       - name: Configure Linux App Service for the prebuilt package
         env:
           APP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}

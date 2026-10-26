@@ -1,35 +1,15 @@
 {
-  "name": "auth-boilerplate",
+  "name": "gourmet-group-sample",
   "version": "1.0.0",
-  "description": "",
+  "description": "A dependency-free recipe discovery sample for Azure App Service.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "async": "^2.6.0",
-    "bcrypt": "^1.0.3",
-    "body-parser": "^1.18.2",
-    "cloudinary": "^1.9.1",
-    "connect-flash": "^0.1.1",
-    "dotenv": "^4.0.0",
-    "ejs": "^2.5.7",
-    "express": "^4.16.2",
-    "express-ejs-layouts": "^2.3.1",
-    "express-session": "^1.15.6",
-    "morgan": "^1.7.0",
-    "multer": "^1.3.0",
-    "passport": "^0.4.0",
-    "passport-facebook": "^2.1.1",
-    "passport-local": "^1.0.0",
-    "pg": "^6.4.1",
-    "pg-hstore": "^2.3.2",
-    "request": "^2.83.0",
-    "rowdy-logger": "0.0.2",
-    "sequelize": "^4.29.0",
-    "sequelize-cli": "^3.2.0"
-  }
+  "license": "ISC"
 }

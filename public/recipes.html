@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find recipes | Gourmet Group</title>
+  <link rel="icon" href="/images/logo.png">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body data-page="catalog">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header>
+    <nav class="container nav" aria-label="Main navigation">
+      <a href="/" class="brand"><img src="/images/logo.png" width="48" height="48" alt="">Gourmet Group</a>
+      <a href="/recipes" aria-current="page">Search recipes</a>
+    </nav>
+  </header>
+  <main id="main" class="container section">
+    <h1>Find something delicious</h1>
+    <p id="search-help">Search by recipe name or the ingredients you have on hand.</p>
+    <form method="get" action="/recipes" class="search-form" role="search">
+      <div class="search-field">
+        <label for="recipe-search">Recipe name or ingredients</label>
+        <input id="recipe-search" type="search" name="q" maxlength="100" placeholder="Try tomato, garlic">
+      </div>
+      <button type="submit" class="button">Search</button>
+      <a href="/recipes">Show all samples</a>
+    </form>
+    <noscript><p class="notice">Enable JavaScript to browse and search recipes.</p></noscript>
+    <p id="status" class="notice" role="status">Loading recipes...</p>
+    <h2 id="results-heading">From the sample kitchen</h2>
+    <div id="recipes" class="recipe-grid" aria-labelledby="results-heading"></div>
+  </main>
+  <footer>
+    <div class="container footer-content">
+      <p>Gourmet Group &middot; No accounts or saved data</p>
+      <p><a href="/recipes">Browse recipes</a></p>
+    </div>
+  </footer>
+</body>
+</html>

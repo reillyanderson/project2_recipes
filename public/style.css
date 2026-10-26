@@ -1,131 +1,67 @@
-body{
-	display: flex;
-	min-height: 100vh;
-	flex-direction: column;
+:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #263b3b;
+  background: #fafaf7;
+  line-height: 1.65;
 }
-main{
-	flex: 1 0 auto;
-}
-.home-nav-selection{
-	margin-left: 70px;
-	font-family: 'Great Vibes', cursive;
-}
-.title-nav{
-	font-size: 30px !important;
-}
-.brand-logo{
-	margin-left: 10px;
-}
-#columns {
-	-webkit-column-count: 5;
-	-webkit-column-gap: 15px;
-	-webkit-column-fill: auto;
-	-moz-column-count: 5;
-	-moz-column-gap: 15px;
-	-moz-column-fill: auto;
-	column-count: 5;
-	column-gap: 15px;
-	column-fill: auto;
-}
-
-.pin {
-	display: inline-block;
-	background: #FEFEFE;
-	border: 2px solid #FAFAFA;
-	border-radius: 5px;
-	box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
-	margin: 0 2px 15px;
-	-webkit-column-break-inside: avoid;
-	-moz-column-break-inside: avoid;
-	column-break-inside: avoid;
-	padding: 15px;
-	padding-bottom: 5px;
-	background: -webkit-linear-gradient(45deg, #FFF, #F9F9F9);
-	opacity: 1;
-}
-
-.card-image-pin {
-	border-bottom: 1px solid #ccc;
-	padding-bottom: 15px;
-	margin-bottom: 5px;
-}
-.card-content{
-	padding: 10px !important;
-}
-.pin-p {
-	font: 12px/18px Arial, sans-serif;
-	color: #333;
-	margin: 0;
-}
-p {
-  line-height: 2rem;
-}
-.button-collapse {
-  color: white;
-}
-.parallax-container {
-  min-height: 380px;
-  line-height: 0;
-  height: auto;
-  color: rgba(255,255,255,.9);
-}
-.parallax-container .section {
-    width: 100%;
-}
-
-.link-text-footer{
-	padding-left: 8px;
-	padding-right: 4px;
-}
-
-@media only screen and (max-width : 992px) {
-  .parallax-container .section {
-    position: absolute;
-    top: 40%;
-	}
-  #index-banner .section {
-    top: 10%;
-  }
-  #columns{
-  	-webkit-column-count: 4;
-	-moz-column-count: 4;
-	column-count: 4;
-  }
-  .card-content{
-  	padding: 5px !important;
-  	margin: 5px;
-  }
-  .pin{
-  	padding: 15px;
-  	width: 90%;
-  	margin: 10px !important;
-  }
-}
-
-@media only screen and (max-width : 600px) {
-  #index-banner .section {
-    top: 0;
-  }
-  #columns{
-  	-webkit-column-count: 2;
-	-moz-column-count: 2;
-	column-count: 2;
-	margin: 10px;
-  }
-  .card-content{
-  	padding: 2px !important;
-  	margin: 2px;
-  }
-  .pin{
-  	padding: 10px;
-  	width: 90%;
-  	margin: 10px !important;
-  }
-}
-
-.icon-block {
-  padding: 0 15px;
-}
-.icon-block .material-icons {
-  font-size: inherit;
+* { box-sizing: border-box; }
+body { margin: 0; display: flex; min-height: 100vh; flex-direction: column; }
+main { flex: 1; }
+a { color: #006c70; text-underline-offset: 0.2em; }
+a:hover { color: #00494d; }
+:focus-visible { outline: 3px solid #b85d13; outline-offset: 4px; }
+h1, h2, h3 { line-height: 1.2; }
+h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 600; }
+h2 { font-size: 1.6rem; }
+.container { width: min(1120px, 90%); margin: 0 auto; }
+header { background: #00838f; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 76px; }
+.nav a { color: white; text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+.brand { display: flex; align-items: center; gap: 0.7rem; font-family: Georgia, serif; font-size: 1.6rem; }
+.brand img { border-radius: 50%; }
+.hero, .food-banner { background-size: cover; background-position: center; text-align: center; color: white; }
+.hero { background-image: linear-gradient(#102222b3, #102222b3), url("/images/background-one.jpg"); }
+.hero-content { padding: 5rem 0; }
+.hero h1 { color: #8fe0d5; font-family: Georgia, serif; font-style: italic; font-size: clamp(3rem, 8vw, 5rem); margin: 0; }
+.tagline { font-size: 1.5rem; }
+.button { display: inline-block; background: #007d73; color: white; padding: 0.8rem 1.6rem; border: 0; border-radius: 3px; font: inherit; cursor: pointer; text-decoration: none; }
+.button:hover { background: #005c55; color: white; }
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; padding: 3rem 0; }
+.features h2 { color: #006c70; }
+.food-banner { background-image: linear-gradient(#102222b3, #102222b3), url("/images/background-two.jpg"); padding: 4rem 0; }
+.section { padding-top: 2rem; padding-bottom: 3rem; }
+.search-form { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin: 2rem 0; }
+.search-form > a { padding-bottom: 0.8rem; }
+.search-field { flex: 1 1 240px; }
+label { display: block; font-weight: 600; margin-bottom: 0.4rem; }
+input { width: 100%; padding: 0.8rem; border: 1px solid #6a8282; border-radius: 3px; font: inherit; background: white; }
+.notice { padding: 1rem; border-left: 4px solid #00838f; background: #e9f2ef; }
+.result-count { color: #536b6b; font-size: 1rem; }
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 1.5rem; }
+.recipe-card { background: white; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 6px #20373726; }
+.recipe-card a { display: block; height: 100%; text-decoration: none; }
+.recipe-card a:hover { background: #eef5f2; }
+.recipe-card img { width: 100%; height: 190px; object-fit: cover; }
+.card-content { padding: 1.2rem; }
+.card-content h3 { margin-top: 0.5rem; font-size: 1.3rem; }
+.category { color: #536b6b; font-size: 0.9rem; }
+.recipe-detail { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: start; }
+.recipe-photo { width: 100%; height: auto; max-height: 460px; object-fit: cover; border-radius: 5px; }
+.ingredients { padding-left: 1.3rem; }
+.ingredients li { margin-bottom: 0.6rem; }
+.instructions { max-width: 800px; margin: 2rem 0; }
+footer { background: #445453; color: white; padding: 1.5rem 0; }
+footer a { color: #b2eee5; }
+footer a:hover { color: white; }
+.footer-content { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: 0.9rem; }
+.skip-link { position: absolute; left: 1rem; top: -100px; background: white; padding: 1rem; z-index: 1; }
+.skip-link:focus { top: 1rem; }
+@media (max-width: 700px) {
+  .features, .recipe-detail { grid-template-columns: 1fr; gap: 1.2rem; }
+  .brand { font-size: 1.15rem; }
+  .brand img { width: 36px; height: 36px; }
+  .nav { font-size: 0.9rem; }
+  .hero-content { padding: 3rem 0; }
 }

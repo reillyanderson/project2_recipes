@@ -1,50 +1,79 @@
-require('dotenv').config();
-var express = require('express');
-var bodyParser = require('body-parser');
-var ejsLayouts = require('express-ejs-layouts');
-var flash = require('connect-flash');
-var multer = require('multer');
-var cloudinary = require('cloudinary');
-var isLoggedIn = require('./middleware/isLoggedIn');
-var passport = require('./config/passportConfig');
-var session = require('express-session');
-var rowdy = require('rowdy-logger');
-var app = express();
+const http = require('node:http');
+const { readFile } = require('node:fs/promises');
+const path = require('node:path');
 
-var upload = multer({dest: "./uploads"});
+const publicFiles = new Map([
+  ['/', ['index.html', 'text/html; charset=utf-8']],
+  ['/recipes', ['recipes.html', 'text/html; charset=utf-8']],
+  ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+  ['/style.css', ['style.css', 'text/css; charset=utf-8']],
+  ['/recipes.json', ['recipes.json', 'application/json; charset=utf-8']],
+  ['/images/logo.png', ['images/logo.png', 'image/png']],
+  ...['one', 'two', 'three'].map(name => [
+    `/images/background-${name}.jpg`,
+    [`images/background-${name}.jpg`, 'image/jpeg']
+  ])
+]);
+const detailPage = /^\/recipes\/sample-[a-z0-9-]+$/;
 
-rowdy.begin(app);
+function createApp() {
+  return http.createServer({
+    headersTimeout: 10000,
+    requestTimeout: 30000,
+    maxHeaderSize: 16384
+  }, async (req, res) => {
+    res.setHeader('Content-Security-Policy', [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self'",
+      "img-src 'self'",
+      "connect-src 'self'",
+      "object-src 'none'",
+      "base-uri 'none'",
+      "frame-ancestors 'none'",
+      "form-action 'self'"
+    ].join('; '));
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Cache-Control', 'no-store');
 
-app.set('view engine', 'ejs');
-app.use(require('morgan')('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(ejsLayouts);
-app.use(express.static(__dirname + '/public/'));
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true
-}));
-app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(function(req, res, next){
-  res.locals.currentUser = req.user;
-  res.locals.alerts = req.flash();
-  next();
-});
+    function send(status, body, type = 'application/json; charset=utf-8') {
+      const content = Buffer.isBuffer(body) ? body : Buffer.from(
+        type.startsWith('application/json') ? JSON.stringify(body) : body
+      );
+      res.writeHead(status, { 'Content-Type': type, 'Content-Length': content.length });
+      res.end(req.method === 'HEAD' ? undefined : content);
+    }
 
-app.get('/', function(req, res){
-  res.render('home');
-});
+    try {
+      if (!['GET', 'HEAD'].includes(req.method)) {
+        req.resume();
+        res.setHeader('Allow', 'GET, HEAD');
+        return send(405, { message: 'This sample is read-only. Use GET or HEAD.' });
+      }
 
-app.use('/auth', require('./controllers/auth'));
-app.use('/recipes', require('./controllers/recipes'));
-app.use('/recipes/wishlist', require('./controllers/wishlist'));
-app.use('/recipes/myrecipes', require('./controllers/myrecipes'));
+      const url = new URL(req.url, 'http://localhost');
+      if (url.pathname === '/health') return send(200, { status: 'ok' });
 
-var server = app.listen(process.env.PORT || 3000, function() {
-  rowdy.print();
-});
+      const file = detailPage.test(url.pathname)
+        ? ['recipe.html', 'text/html; charset=utf-8']
+        : publicFiles.get(url.pathname);
+      if (!file) {
+        return send(404, 'Page not found. Browse recipes at /recipes.', 'text/plain; charset=utf-8');
+      }
+      const content = await readFile(path.join(__dirname, 'public', file[0]));
+      return send(200, content, file[1]);
+    } catch (error) {
+      console.error(error.message);
+      return send(500, { message: 'Something went wrong. Please try again.' });
+    }
+  });
+}
 
-module.exports = server;
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  createApp().listen(port, () => console.log(`Gourmet Group listening on port ${port}`));
+}
+
+module.exports = createApp;

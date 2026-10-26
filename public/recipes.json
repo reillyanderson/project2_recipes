@@ -1,0 +1,56 @@
+[
+  {
+    "id": "sample-tomato-pasta",
+    "title": "Tomato and basil pasta",
+    "category": "Vegetarian",
+    "publisher": "Gourmet Group sample kitchen",
+    "image": "/images/background-one.jpg",
+    "ingredients": ["200 g pasta", "400 g chopped tomatoes", "2 cloves garlic, minced", "1 tbsp olive oil", "A handful of fresh basil", "Salt and pepper to taste"],
+    "instructions": "Cook the pasta according to its package instructions.\nWarm the oil in a pan and gently cook the garlic for one minute. Add the tomatoes and simmer for 15 minutes.\nDrain the pasta, toss with the sauce and basil, and season to taste."
+  },
+  {
+    "id": "sample-lemon-chickpeas",
+    "title": "Lemon chickpea salad",
+    "category": "Vegan",
+    "publisher": "Gourmet Group sample kitchen",
+    "image": "/images/background-two.jpg",
+    "ingredients": ["400 g canned chickpeas, drained and rinsed", "1 cucumber, diced", "2 tomatoes, diced", "Juice of 1 lemon", "2 tbsp olive oil", "A handful of chopped parsley", "Salt and pepper to taste"],
+    "instructions": "Combine the chickpeas, cucumber, tomatoes, and parsley in a bowl.\nWhisk the lemon juice and olive oil together, then pour over the salad.\nToss, season to taste, and serve."
+  },
+  {
+    "id": "sample-vegetable-rice",
+    "title": "Ginger vegetable rice",
+    "category": "Vegetarian",
+    "publisher": "Gourmet Group sample kitchen",
+    "image": "/images/background-three.jpg",
+    "ingredients": ["2 cups cooked rice, freshly cooked or safely refrigerated", "1 carrot, diced", "1 cup frozen peas", "2 eggs, beaten", "1 tsp grated ginger", "1 tbsp vegetable oil", "1 tbsp soy sauce"],
+    "instructions": "Heat the oil in a large pan. Add the carrot and ginger and stir-fry until the carrot softens.\nAdd the peas. Push the vegetables aside, add the eggs, and stir until fully cooked.\nAdd the rice and soy sauce. Stir-fry until everything is steaming hot throughout, then serve immediately."
+  },
+  {
+    "id": "sample-roasted-potatoes",
+    "title": "Garlic roasted potatoes",
+    "category": "Vegan",
+    "publisher": "Gourmet Group sample kitchen",
+    "image": "/images/background-one.jpg",
+    "ingredients": ["600 g potatoes, cut into small chunks", "2 tbsp olive oil", "2 cloves garlic, minced", "1 tsp dried rosemary", "Salt and pepper to taste"],
+    "instructions": "Heat the oven to 220 C (425 F).\nToss the potatoes with the oil, garlic, rosemary, salt, and pepper. Spread in a single layer on a baking tray.\nRoast for 35 to 45 minutes, turning halfway through, until golden and tender."
+  },
+  {
+    "id": "sample-lentil-soup",
+    "title": "Tomato and lentil soup",
+    "category": "Vegan",
+    "publisher": "Gourmet Group sample kitchen",
+    "image": "/images/background-two.jpg",
+    "ingredients": ["1 onion, diced", "1 carrot, diced", "1 tbsp olive oil", "150 g red lentils, rinsed", "400 g chopped tomatoes", "750 ml vegetable stock", "1 tsp ground cumin", "Salt and pepper to taste"],
+    "instructions": "Warm the oil in a pot and cook the onion and carrot until softened.\nAdd the cumin, lentils, tomatoes, and stock. Bring to a boil.\nReduce the heat and simmer for 20 to 25 minutes, stirring occasionally, until the lentils are tender. Season to taste."
+  },
+  {
+    "id": "sample-banana-pancakes",
+    "title": "Banana oat pancakes",
+    "category": "Breakfast",
+    "publisher": "Gourmet Group sample kitchen",
+    "image": "/images/background-three.jpg",
+    "ingredients": ["1 ripe banana", "2 eggs", "60 g rolled oats", "1/2 tsp baking powder", "1 tsp vegetable oil", "Fresh fruit to serve"],
+    "instructions": "Blend the banana, eggs, oats, and baking powder into a batter. Let it rest for five minutes.\nLightly oil a nonstick pan over medium heat. Spoon in small rounds of batter.\nCook for two to three minutes per side until golden and fully set in the middle. Serve with fresh fruit."
+  }
+]

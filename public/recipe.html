@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipe | Gourmet Group</title>
+  <link rel="icon" href="/images/logo.png">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body data-page="detail">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header>
+    <nav class="container nav" aria-label="Main navigation">
+      <a href="/" class="brand"><img src="/images/logo.png" width="48" height="48" alt="">Gourmet Group</a>
+      <a href="/recipes">Search recipes</a>
+    </nav>
+  </header>
+  <main id="main" class="container section">
+    <a href="/recipes">&larr; Browse recipes</a>
+    <noscript><p class="notice">Enable JavaScript to view this recipe.</p></noscript>
+    <p id="status" class="notice" role="status">Loading recipe...</p>
+    <article id="recipe" hidden>
+      <h1 id="recipe-title"></h1>
+      <p id="recipe-category" class="category"></p>
+      <div class="recipe-detail">
+        <img id="recipe-image" class="recipe-photo" width="720" height="480" alt="">
+        <section>
+          <h2>Ingredients</h2>
+          <ul id="ingredients" class="ingredients"></ul>
+        </section>
+      </div>
+      <section class="instructions">
+        <h2>Let's make it</h2>
+        <div id="instructions"></div>
+      </section>
+      <p class="notice">This is a read-only sample. Recipes, notes, and photos are not saved. Photos are illustrative, not photos of the finished dishes.</p>
+    </article>
+  </main>
+  <footer>
+    <div class="container footer-content">
+      <p>Gourmet Group &middot; No accounts or saved data</p>
+      <p><a href="/recipes">Browse recipes</a></p>
+    </div>
+  </footer>
+</body>
+</html>

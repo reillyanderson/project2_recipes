@@ -1,0 +1,61 @@
+name: Package and deploy recipe sample
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: recipes-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Create ready-to-run ZIP
+        run: zip -q -r app.zip index.js package.json package-lock.json public
+      - uses: actions/upload-artifact@v7
+        with:
+          name: app-service-package
+          path: app.zip
+          retention-days: 7
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    needs: package
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: app-service-package
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Configure Linux App Service for the prebuilt package
+        env:
+          APP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: |
+          az webapp config set --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" \
+            --linux-fx-version "NODE|24-lts" --startup-file "node index.js" \
+            --generic-configurations '{"healthCheckPath":"/health"}' --output none
+          az webapp config appsettings set --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" \
+            --settings WEBSITE_RUN_FROM_PACKAGE=1 SCM_DO_BUILD_DURING_DEPLOYMENT=false NODE_ENV=production --output none
+      - name: Deploy ZIP package
+        env:
+          APP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: az webapp deploy --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" --src-path app.zip --type zip

@@ -1,74 +1,91 @@
 # Gourmet Group
 
-## Technical Requirements
-* Have at least 2 models (more if they make sense)
-* Include sign up/log in functionality, with hashed passwords & an authorization flow
-* Incorporate at least one API
-* Have complete RESTful routes for at least one of your resources with GET, POST, PUT, and DELETE
-* Utilize an ORM to create a database table structure and interact with your relationally-stored data
-* Include wireframes that you designed during the planning process
-* Have semantically clean HTML and CSS
-* Be deployed online and accessible to the public
+A small, read-only recipe sample: browse six recipes, search by ingredients, and
+open cooking instructions. No accounts, database, uploads, or external APIs.
+The teal styling and food photography remain; photos are illustrative.
 
-## Technologies Used
-* Node.js
-* Express
-* Postgres
-* jQuery and AJAX
-* Materialize CSS framework
-* Cloudinary
+## Run
 
-## User Stories
-* I do a lot of cooking and want to have a place to organize my recipes. I am constantly slightly changing ingredients and cooking times and would like to have an easy to see notes area so that I can keep track of changes and observations. I'd like my recipes to be easy to edit and easy to find. I'd also like to upload photos of my creations. 
-* I'm constantly trying to figure out what to cook with ingredients that I have at home. I'd like to be able to search for recipes by ingredients and add them to a wishlist/to be cooked later. I like looking for things to try and having an accessible list, like pinterest, of things i"m interested in. I'd like to move recipes I've tried to a list of recipes I've made and have the ability to comment on that recipe about how I've made it. 
+Install the latest patch of [Node.js 24 LTS](https://nodejs.org/), then:
 
-## My Process - Trello Board
-### Sprint 1
-![Trello Board](/public/images/screenshot-8.png)
-* Stubbed out my trello board (see above)
-* Created user stories and wireframed (how I want the site to look and the routs and tables I'll need for functionality)
-* Explored various APIs and chose to use Food2Fork
-* Followed Trello board (green is sprint one items)
+```powershell
+node index.js
+```
 
-### Sprint 2
-![Trello Board](/public/images/screenshot-4.png)
-* Started with GET routes, making sure that each page shows up how it's supposed to
-* Worked on POST routes and adding items to the database
-* Worked on DLETE and PUT routes for the wishlist to get MVP functionality
-* My AUTH boilerplate used bootstrap, but I wanted to use materialize, so my initial styling for this sprint involved switching from boostrap to materialize
+Open <http://localhost:3000>. That's it. **No npm packages need to be installed.**
+`npm start` also works. Set `PORT` to use a different port; Azure supplies it
+automatically.
 
-### Sprint 3
-![Trello Board](/public/images/screenshot-5.png)
-* Added my recipes routes
-* Added the homepage styling and styled every page using the style.css file in the public folder
-* Added cloudinary and the ability to upload a photo of what a user has made
+## How it works
 
-## Homepage
-![Homepage Layout](/public/images/screenshot-7.png)
+Plain HTML, CSS, and browser JavaScript, plus a small server using only Node's
+built-in HTTP and file APIs. Recipes live in `public\recipes.json`; edit that file
+to change the catalog. JavaScript must be enabled for search and recipe details.
+Recipes can be bookmarked, but nothing is saved to the server.
 
-## Sample Search Results
-![Search Results Page](/public/images/screenshot-6.png)
+There are **zero third-party npm dependencies**. Express, EJS, Passport,
+body-parser, Sequelize, and the old integrations have been removed, not downgraded
+or patched around. The server only serves an explicit list of public files,
+rejects write methods, and sets a restrictive Content Security Policy. Keep Node
+and the Azure runtime patched; a zero-dependency audit isn't a guarantee against
+all security issues.
 
-## Next Steps
-* Add an about page for the site/add about information to the home page
-* Add a public profile page for users
-* Add the ability to search for users and view their public profile with recipes
+## Deploy to Azure App Service
 
-## Getting Started
-* Fork and clone this repository
-* Run `npm install` to install dependencies
-	* Use `nodemon` to start the server
-	* Create the database using `sequelize`
-	* Run migrations to use the models
-	* Create an .env file with:
-		* `SESSION_SECRET`
-		* `FACEBOOK_APP_ID`
-		* `FACEBOOK_APP_SECRET`
-		* `BASE_URL` (for development, likely localhost)
-		* `RECIPE_API_KEY` from Food2Fork
-		* `CLOUDINARY_URL` from your cloudinary account
-		* `CLOUDINARY_CLOUD_NAME` your cloudinary account name
-	* Create a .gitignore file and add node_modules, .env, .DS_Store
+Use **Linux App Service with Node.js 24 LTS** and **run from ZIP package**. The
+site is read-only and needs no build step or dependency restore at startup.
 
-## View the site!
-https://gourmet-group.herokuapp.com/
+Create an app in the Azure portal, or use Azure CLI from PowerShell (choose your
+own names; B1 incurs charges):
+
+```powershell
+az login
+$group = 'recipes-sample-rg'
+$app = '<globally-unique-app-name>'
+az group create --name $group --location westus2
+az appservice plan create --name recipes-sample-plan --resource-group $group --is-linux --sku B1
+az webapp create --name $app --resource-group $group --plan recipes-sample-plan --runtime 'NODE:24-lts'
+```
+
+### Manual ZIP deployment
+
+Run from the repository root:
+
+```powershell
+Compress-Archive -Path index.js,package.json,package-lock.json,public -DestinationPath .\app.zip -Force
+az webapp config set --resource-group $group --name $app --linux-fx-version 'NODE|24-lts' --startup-file 'node index.js'
+az webapp config appsettings set --resource-group $group --name $app --settings WEBSITE_RUN_FROM_PACKAGE=1 SCM_DO_BUILD_DURING_DEPLOYMENT=false NODE_ENV=production
+az webapp deploy --resource-group $group --name $app --src-path .\app.zip --type zip
+```
+
+The ZIP must contain `index.js` at its root, not an enclosing repository folder.
+There is no `node_modules` directory to include. Enable `/health` under App Service
+> Monitoring > Health check.
+
+### GitHub Actions
+
+`.github\workflows\azure-app-service.yml` packages pull requests.
+Pushes to `master` and manual runs on `master` also deploy to an existing app.
+The workflow configures the runtime, startup command, health check, and
+run-from-package settings above.
+
+For passwordless deployment, configure
+[GitHub Actions OIDC authentication](https://learn.microsoft.com/en-us/azure/app-service/deploy-github-actions#manually-set-up-a-github-actions-workflow):
+
+1. Create an Entra deployment identity and grant **Website Contributor** scoped
+   to this App Service.
+2. Add a federated credential with issuer
+   `https://token.actions.githubusercontent.com`, audience `api://AzureADTokenExchange`,
+   and subject `repo:reillyanderson/project2_recipes:environment:production`.
+   Substitute your own owner/repository for a fork.
+3. Create the GitHub environment `production`. Add secrets `AZURE_CLIENT_ID`,
+   `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, and variables `AZURE_WEBAPP_NAME`,
+   `AZURE_RESOURCE_GROUP`.
+
+The workflow also publishes an `app-service-package` artifact. Extract its inner
+`app.zip` to use the manual deployment command. If you rename `master`, update
+both the triggers and deployment guard in the workflow.
+
+After deployment, visit `https://<app-name>.azurewebsites.net/` and `/health`
+(returns `{"status":"ok"}`). No Azure resources are changed until you run the
+commands or configure and run the workflow.

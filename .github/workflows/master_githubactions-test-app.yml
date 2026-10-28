@@ -55,10 +55,58 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E9A86131EFEA40C198176607C1F7524C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BFD70A0BAB864E1EBC311FF5CD20F19B }}
 
+      - name: Upload deployment package
+        id: upload-package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $account = "revisionsdeployments"
+          $container = "githubactionstest"
+          $blob = "githubactions-test-app-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT.zip"
+          $zipPath = Join-Path $env:RUNNER_TEMP $blob
+      
+          # Archive the downloaded artifact, without an enclosing directory.
+          [System.IO.Compression.ZipFile]::CreateFromDirectory(
+            (Get-Location).Path,
+            $zipPath
+          )
+      
+          az storage blob upload `
+            --account-name $account `
+            --container-name $container `
+            --name $blob `
+            --file $zipPath `
+            --auth-mode login `
+            --only-show-errors `
+            --output none
+          if ($LASTEXITCODE -ne 0) {
+            throw "Package upload failed."
+          }
+      
+          $expiry = [DateTime]::UtcNow.AddHours(1).ToString("yyyy-MM-ddTHH:mmZ")
+          $packageUri = az storage blob generate-sas `
+            --account-name $account `
+            --container-name $container `
+            --name $blob `
+            --auth-mode login `
+            --as-user `
+            --permissions r `
+            --expiry $expiry `
+            --https-only `
+            --full-uri `
+            --only-show-errors `
+            --output tsv
+          if ($LASTEXITCODE -ne 0) {
+            throw "Download URL generation failed."
+          }
+      
+          Write-Output "::add-mask::$packageUri"
+          "package-uri=$packageUri" >> $env:GITHUB_OUTPUT
+
       - name: Submit OneDeploy through ARM
         shell: pwsh
         env:
-          PACKAGE_URI: ${{ secrets.DEPLOYMENT_PACKAGE_URI }}
+          PACKAGE_URI: ${{ steps.upload-package.outputs.package-uri }}
         run: |
           $siteId = "/subscriptions/b229845e-c90e-40dc-acd6-7d82908c921c/resourceGroups/test-githubactions-rg/providers/Microsoft.Web/sites/githubactions-test-app"
           $uri = "https://management.azure.com$siteId/extensions/onedeploy?api-version=2024-11-01"

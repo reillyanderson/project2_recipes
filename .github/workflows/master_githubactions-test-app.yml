@@ -55,11 +55,24 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E9A86131EFEA40C198176607C1F7524C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BFD70A0BAB864E1EBC311FF5CD20F19B }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'githubactions-test-app'
-          slot-name: 'Production'
-          package: .
+      - name: Submit OneDeploy through ARM
+        shell: pwsh
+        env:
+          PACKAGE_URI: ${{ secrets.DEPLOYMENT_PACKAGE_URI }}
+        run: |
+          $siteId = "/subscriptions/b229845e-c90e-40dc-acd6-7d82908c921c/resourceGroups/test-githubactions-rg/providers/Microsoft.Web/sites/githubactions-test-app"
+          $uri = "https://management.azure.com$siteId/extensions/onedeploy?api-version=2024-11-01"
+      
+          $bodyPath = Join-Path $env:RUNNER_TEMP "onedeploy.json"
+          @{
+            properties = @{
+              type = "zip"
+              packageUri = $env:PACKAGE_URI
+            }
+          } | ConvertTo-Json -Depth 3 | Set-Content $bodyPath -Encoding utf8NoBOM
+      
+          az rest --method put --uri $uri --body "@$bodyPath" --headers "Content-Type=application/json"
+          if ($LASTEXITCODE -ne 0) {
+            throw "OneDeploy submission failed."
+          }
           
